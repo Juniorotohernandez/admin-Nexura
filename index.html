@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin | Nexura Capital</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#020817;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* FONDO */
+
+.bg{
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at top right, rgba(255,215,0,.15), transparent 25%),
+    radial-gradient(circle at bottom left, rgba(14,165,233,.15), transparent 25%),
+    linear-gradient(135deg,#020817,#07152d,#020817);
+    z-index:-3;
+}
+
+.blur1,.blur2{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:.08;
+    z-index:-2;
+}
+
+.blur1{
+    width:300px;
+    height:300px;
+    background:gold;
+    top:-100px;
+    right:-100px;
+}
+
+.blur2{
+    width:350px;
+    height:350px;
+    background:#0ea5e9;
+    bottom:-100px;
+    left:-100px;
+}
+
+/* LOGIN */
+
+.login{
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.login-box{
+    width:100%;
+    max-width:420px;
+    background:rgba(15,23,42,.85);
+    border:1px solid rgba(255,255,255,.05);
+    border-radius:30px;
+    padding:35px;
+    backdrop-filter:blur(20px);
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.logo img{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    border:3px solid gold;
+    object-fit:cover;
+}
+
+.logo h1{
+    color:gold;
+    margin-top:15px;
+}
+
+.input-group{
+    margin-bottom:18px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    color:#cbd5e1;
+}
+
+.input-group input,
+.input-group select{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:14px;
+    background:#0f172a;
+    color:white;
+    outline:none;
+}
+
+.btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:gold;
+    color:#07152d;
+    font-weight:800;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+/* PANEL */
+
+.dashboard{
+    display:none;
+}
+
+header{
+    width:100%;
+    padding:20px 30px;
+    background:rgba(2,8,23,.9);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid rgba(255,255,255,.05);
+    backdrop-filter:blur(15px);
+    position:sticky;
+    top:0;
+    z-index:999;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.header-left img{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    border:2px solid gold;
+}
+
+.header-left h2{
+    color:gold;
+}
+
+.container{
+    width:95%;
+    max-width:1500px;
+    margin:auto;
+    padding:30px 0;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:rgba(15,23,42,.8);
+    padding:25px;
+    border-radius:25px;
+    border:1px solid rgba(255,255,255,.05);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card h4{
+    color:#94a3b8;
+    margin-bottom:10px;
+}
+
+.card h1{
+    color:gold;
+    font-size:34px;
+}
+
+.section{
+    margin-top:25px;
+    background:rgba(15,23,42,.8);
+    border-radius:25px;
+    padding:25px;
+    border:1px solid rgba(255,255,255,.05);
+}
+
+.section h2{
+    color:gold;
+    margin-bottom:20px;
+}
+
+.table-box{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    min-width:900px;
+    border-collapse:collapse;
+}
+
+th{
+    background:#0f172a;
+    color:gold;
+    padding:15px;
+    text-align:left;
+}
+
+td{
+    padding:15px;
+    border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.action-btn{
+    padding:8px 14px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:700;
+    margin-right:5px;
+}
+
+.approve{
+    background:#22c55e;
+    color:white;
+}
+
+.reject{
+    background:red;
+    color:white;
+}
+
+.pending{
+    background:#facc15;
+    color:black;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.logout{
+    background:red;
+    color:white;
+    margin-top:20px;
+}
+
+.success{
+    background:#22c55e;
+    color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+<div class="blur1"></div>
+<div class="blur2"></div>
+
+<!-- LOGIN ADMIN -->
+
+<div class="login" id="loginBox">
+
+    <div class="login-box">
+
+        <div class="logo">
+            <img src="img/Nexura_Capital_logo.png">
+            <h1>PANEL ADMIN</h1>
+        </div>
+
+        <div class="input-group">
+            <label>Correo Admin</label>
+            <input type="email" id="adminEmail">
+        </div>
+
+        <div class="input-group">
+            <label>Contraseña</label>
+            <input type="password" id="adminPassword">
+        </div>
+
+        <button class="btn" id="loginBtn">
+            Entrar al Panel
+        </button>
+
+    </div>
+
+</div>
+
+<!-- DASHBOARD -->
+
+<div class="dashboard" id="dashboard">
+
+<header>
+
+    <div class="header-left">
+
+        <img src="img/Nexura_Capital_logo.png">
+
+        <div>
+            <h2>NEXURA CAPITAL</h2>
+            <small>Panel Administrativo</small>
+        </div>
+
+    </div>
+
+    <div>
+        <small>Administrador</small>
+        <h3>Oficina Central</h3>
+    </div>
+
+</header>
+
+<div class="container">
+
+    <!-- CARDS -->
+
+    <div class="cards">
+
+        <div class="card">
+            <h4>Total Usuarios</h4>
+            <h1 id="totalUsers">0</h1>
+        </div>
+
+        <div class="card">
+            <h4>Capital Total</h4>
+            <h1 id="totalCapital">L 0</h1>
+        </div>
+
+        <div class="card">
+            <h4>Retiros Pendientes</h4>
+            <h1 id="pendingWithdraws">0</h1>
+        </div>
+
+        <div class="card">
+            <h4>Depósitos Pendientes</h4>
+            <h1 id="pendingDeposits">0</h1>
+        </div>
+
+    </div>
+
+    <!-- AGREGAR CAPITAL -->
+
+    <div class="section">
+
+        <h2>Agregar Capital al Usuario</h2>
+
+        <div class="form-grid">
+
+            <div class="input-group">
+                <label>UID Usuario</label>
+                <input type="text" id="uid">
+            </div>
+
+            <div class="input-group">
+                <label>Monto en Lempiras</label>
+                <input type="number" id="amount">
+            </div>
+
+            <div class="input-group">
+                <label>Estado Cuenta</label>
+                <select id="status">
+                    <option value="Activo">Activo</option>
+                    <option value="Pendiente">Pendiente</option>
+                </select>
+            </div>
+
+        </div>
+
+        <button class="btn success" id="addCapitalBtn">
+            Actualizar Usuario
+        </button>
+
+    </div>
+
+    <!-- USUARIOS -->
+
+    <div class="section">
+
+        <h2>Usuarios Registrados</h2>
+
+        <div class="table-box">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Capital</th>
+                        <th>Ganancia 10%</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+
+                <tbody id="usersTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- DEPOSITOS -->
+
+    <div class="section">
+
+        <h2>Depósitos Pendientes</h2>
+
+        <div class="table-box">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Monto</th>
+                        <th>Método</th>
+                        <th>Fecha</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody id="depositTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- RETIROS -->
+
+    <div class="section">
+
+        <h2>Retiros Pendientes</h2>
+
+        <div class="table-box">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Monto</th>
+                        <th>Método</th>
+                        <th>Fecha</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody id="withdrawTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <button class="btn logout" id="logoutBtn">
+        Cerrar Sesión
+    </button>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getAuth,
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+getDatabase,
+ref,
+get,
+set,
+update,
+onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+/* FIREBASE */
+
+const firebaseConfig = {
+
+
+  apiKey: "AIzaSyBDSF0i002CE37zDx9oyc1tnWscLCmOdPE",
+
+
+  authDomain: "panel-multinivel.firebaseapp.com",
+
+
+  databaseURL: "https://panel-multinivel-default-rtdb.firebaseio.com",
+
+
+  projectId: "panel-multinivel",
+
+
+  storageBucket: "panel-multinivel.firebasestorage.app",
+
+
+  messagingSenderId: "57838273686",
+
+
+  appId: "1:57838273686:web:a6ec68314165c0ec23aeb7",
+
+
+  measurementId: "G-BS7ZT4B5VJ"
+
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getDatabase(app);
+
+/* LOGIN */
+
+document.getElementById("loginBtn").onclick = async()=>{
+
+const email =
+document.getElementById("adminEmail").value;
+
+const password =
+document.getElementById("adminPassword").value;
+
+try{
+
+await signInWithEmailAndPassword(auth,email,password);
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+/* SESION */
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+document.getElementById("loginBox").style.display = "none";
+
+document.getElementById("dashboard").style.display = "block";
+
+loadUsers();
+
+}
+
+});
+
+/* CARGAR USUARIOS */
+
+function loadUsers(){
+
+const usersRef = ref(db,"users");
+
+onValue(usersRef,(snapshot)=>{
+
+const table =
+document.getElementById("usersTable");
+
+table.innerHTML = "";
+
+let totalUsers = 0;
+let totalCapital = 0;
+
+snapshot.forEach((child)=>{
+
+const data = child.val();
+
+totalUsers++;
+
+totalCapital += Number(data.invested || 0);
+
+table.innerHTML += `
+
+<tr>
+<td>${data.name}</td>
+<td>${data.email}</td>
+<td>L ${Number(data.invested).toFixed(2)}</td>
+<td>L ${(Number(data.invested)*0.10).toFixed(2)}</td>
+<td>${data.status}</td>
+<td>${data.createdAt}</td>
+</tr>
+
+`;
+
+});
+
+document.getElementById("totalUsers").innerHTML =
+totalUsers;
+
+document.getElementById("totalCapital").innerHTML =
+"L " + totalCapital.toFixed(2);
+
+});
+
+}
+
+/* AGREGAR CAPITAL */
+
+document.getElementById("addCapitalBtn").onclick = async()=>{
+
+const uid =
+document.getElementById("uid").value;
+
+const amount =
+Number(document.getElementById("amount").value);
+
+const status =
+document.getElementById("status").value;
+
+if(!uid || !amount){
+
+alert("Completa los campos");
+
+return;
+
+}
+
+try{
+
+await update(ref(db,"users/" + uid),{
+
+invested:amount,
+active:true,
+status:status
+
+});
+
+alert("Usuario actualizado");
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+/* LOGOUT */
+
+document.getElementById("logoutBtn").onclick = async()=>{
+
+await signOut(auth);
+
+window.location.reload();
+
+}
+
+</script>
+
+</body>
+</html>
