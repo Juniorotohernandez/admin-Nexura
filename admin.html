@@ -1,0 +1,1566 @@
+<!-- =========================
+NEXURA ADMIN PRO
+PARTE 1
+========================= -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nexura Capital - Admin Pro</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#07111f;
+color:white;
+overflow-x:hidden;
+}
+
+/* =========================
+LOGIN
+========================= */
+
+.login-screen{
+
+width:100%;
+height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+background:
+linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.9)),
+url('https://images.unsplash.com/photo-1642790106117-e829e14a795f?q=80&w=1974&auto=format&fit=crop');
+
+background-size:cover;
+background-position:center;
+
+}
+
+.login-box{
+
+width:420px;
+
+background:#111827;
+
+padding:40px;
+
+border-radius:28px;
+
+border:1px solid rgba(255,255,255,0.05);
+
+box-shadow:0 0 40px rgba(0,0,0,0.4);
+
+}
+
+.logo{
+
+font-size:36px;
+font-weight:700;
+
+text-align:center;
+
+margin-bottom:15px;
+
+background:linear-gradient(90deg,#60a5fa,#2563eb);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+.sub{
+
+text-align:center;
+color:#94a3b8;
+
+margin-bottom:30px;
+
+}
+
+.input-group{
+margin-bottom:20px;
+}
+
+.input-group label{
+
+display:block;
+margin-bottom:8px;
+color:#cbd5e1;
+
+}
+
+.input-group input{
+
+width:100%;
+padding:16px;
+
+border:none;
+outline:none;
+
+border-radius:14px;
+
+background:#1e293b;
+color:white;
+
+}
+
+.login-btn{
+
+width:100%;
+padding:15px;
+
+border:none;
+border-radius:14px;
+
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+
+color:white;
+
+font-size:15px;
+font-weight:600;
+
+cursor:pointer;
+
+}
+
+.error{
+margin-top:15px;
+text-align:center;
+color:#ef4444;
+}
+
+/* =========================
+DASHBOARD
+========================= */
+
+.dashboard{
+display:none;
+}
+
+/* =========================
+SIDEBAR
+========================= */
+
+.sidebar{
+
+width:280px;
+
+height:100vh;
+
+position:fixed;
+left:0;
+top:0;
+
+background:#111827;
+
+padding:30px 20px;
+
+border-right:1px solid rgba(255,255,255,0.05);
+
+overflow-y:auto;
+
+}
+
+.sidebar-logo{
+
+font-size:32px;
+font-weight:700;
+
+margin-bottom:40px;
+
+text-align:center;
+
+background:linear-gradient(90deg,#60a5fa,#2563eb);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+.menu-item{
+
+padding:16px;
+
+background:#1e293b;
+
+border-radius:14px;
+
+margin-bottom:12px;
+
+cursor:pointer;
+
+transition:0.3s;
+
+}
+
+.menu-item:hover{
+background:#2563eb;
+}
+
+.menu-item.active{
+background:#2563eb;
+}
+
+/* =========================
+MAIN
+========================= */
+
+.main{
+
+margin-left:280px;
+
+padding:30px;
+
+min-height:100vh;
+
+}
+
+.topbar{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+margin-bottom:30px;
+
+}
+
+.topbar h1{
+font-size:34px;
+}
+
+.logout-btn{
+
+padding:12px 18px;
+
+border:none;
+border-radius:12px;
+
+background:#ef4444;
+color:white;
+
+font-weight:600;
+cursor:pointer;
+
+}
+
+/* =========================
+CARDS
+========================= */
+
+.cards{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:20px;
+
+margin-bottom:30px;
+
+}
+
+.card{
+
+background:#111827;
+
+padding:25px;
+
+border-radius:24px;
+
+border:1px solid rgba(255,255,255,0.05);
+
+}
+
+.card h3{
+
+color:#94a3b8;
+font-size:14px;
+
+margin-bottom:10px;
+
+}
+
+.card h1{
+
+font-size:34px;
+
+}
+
+/* =========================
+TABLE
+========================= */
+
+.table-box{
+
+background:#111827;
+
+padding:25px;
+
+border-radius:24px;
+
+overflow:auto;
+
+margin-bottom:25px;
+
+}
+
+.table-box h2{
+margin-bottom:20px;
+}
+
+table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+table th{
+
+padding:16px;
+
+text-align:left;
+
+color:#94a3b8;
+
+border-bottom:1px solid #1e293b;
+
+}
+
+table td{
+
+padding:16px;
+
+border-bottom:1px solid #1e293b;
+
+}
+
+.action-btn{
+
+padding:10px 14px;
+
+border:none;
+border-radius:10px;
+
+font-weight:600;
+
+cursor:pointer;
+
+margin-right:8px;
+margin-bottom:5px;
+
+}
+
+.btn-approve{
+background:#10b981;
+color:white;
+}
+
+.btn-reject{
+background:#ef4444;
+color:white;
+}
+
+.btn-whatsapp{
+background:#06b6d4;
+color:white;
+}
+
+/* =========================
+STATUS
+========================= */
+
+.status-pending{
+color:#facc15;
+font-weight:600;
+}
+
+.status-approved{
+color:#10b981;
+font-weight:600;
+}
+
+.status-rejected{
+color:#ef4444;
+font-weight:600;
+}
+
+/* =========================
+SECTION
+========================= */
+
+.section{
+display:none;
+}
+
+.section.active{
+display:block;
+}
+
+/* =========================
+MOBILE
+========================= */
+
+@media(max-width:900px){
+
+.sidebar{
+width:100%;
+height:auto;
+position:relative;
+}
+
+.main{
+margin-left:0;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+LOGIN
+========================= -->
+
+<div class="login-screen" id="loginScreen">
+
+<div class="login-box">
+
+<div class="logo">
+NEXURA CAPITAL
+</div>
+
+<div class="sub">
+Panel Administrativo Profesional
+</div>
+
+<div class="input-group">
+
+<label>
+Código de acceso
+</label>
+
+<input type="password"
+id="adminCode"
+placeholder="Ingresa código admin">
+
+</div>
+
+<button class="login-btn"
+onclick="loginAdmin()">
+
+Ingresar
+
+</button>
+
+<div class="error" id="error"></div>
+
+</div>
+
+</div>
+
+<!-- =========================
+DASHBOARD
+========================= -->
+
+<div class="dashboard" id="dashboard">
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="sidebar-logo">
+NEXURA
+</div>
+
+<div class="menu-item active"
+data-section="dashboardSection">
+
+📊 Dashboard
+
+</div>
+
+<div class="menu-item"
+data-section="sociosSection">
+
+👥 Socios
+
+</div>
+
+<div class="menu-item"
+data-section="investmentSection">
+
+💰 Inversiones
+
+</div>
+
+<div class="menu-item"
+data-section="withdrawSection">
+
+💸 Retiros Comisión
+
+</div>
+
+<div class="menu-item"
+data-section="capitalSection">
+
+🏦 Retiro Capital
+
+</div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>
+Admin Dashboard
+</h1>
+
+<button class="logout-btn"
+onclick="logoutAdmin()">
+
+Cerrar Sesión
+
+</button>
+
+</div>
+
+<!-- =========================
+DASHBOARD
+========================= -->
+
+<div class="section active"
+id="dashboardSection">
+
+<div class="cards">
+
+<div class="card">
+
+<h3>
+Capital Total Invertido
+</h3>
+
+<h1 id="totalCapital">
+L 0
+</h1>
+
+</div>
+
+<div class="card">
+
+<h3>
+Comisiones Acumuladas
+</h3>
+
+<h1 id="totalCommissions">
+L 0
+</h1>
+
+</div>
+
+<div class="card">
+
+<h3>
+Pago Mensual Estimado
+</h3>
+
+<h1 id="monthlyPayments">
+L 0
+</h1>
+
+</div>
+
+<div class="card">
+
+<h3>
+Total Inversionistas
+</h3>
+
+<h1 id="totalUsers">
+0
+</h1>
+
+</div>
+
+</div>
+
+<div class="table-box">
+
+<h2>
+Últimos Socios
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Nombre</th>
+<th>Capital</th>
+<th>Comisiones</th>
+<th>Mensual</th>
+<th>WhatsApp</th>
+
+</tr>
+
+</thead>
+
+<tbody id="lastUsers">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- =========================
+SOCIOS
+========================= -->
+
+<div class="section"
+id="sociosSection">
+
+<div class="table-box">
+
+<h2>
+Lista Completa de Socios
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Nombre</th>
+<th>Correo</th>
+<th>WhatsApp</th>
+<th>Capital</th>
+<th>Comisiones</th>
+<th>Mensual</th>
+<th>Referidos</th>
+<th>Estado</th>
+<th>Acciones</th>
+
+</tr>
+
+</thead>
+
+<tbody id="usersTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- =========================
+INVERSIONES
+========================= -->
+
+<div class="section"
+id="investmentSection">
+
+<div class="table-box">
+
+<h2>
+Solicitudes de Inversión
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Nombre</th>
+<th>Monto</th>
+<th>WhatsApp</th>
+<th>Fecha</th>
+<th>Estado</th>
+<th>Acciones</th>
+
+</tr>
+
+</thead>
+
+<tbody id="investmentTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+<!-- =========================
+RETIROS COMISIONES
+========================= -->
+
+<div class="section"
+id="withdrawSection">
+
+<div class="table-box">
+
+<h2>
+Solicitudes de Retiro de Comisión
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Nombre</th>
+<th>Monto</th>
+<th>WhatsApp</th>
+<th>Fecha</th>
+<th>Estado</th>
+<th>Acciones</th>
+
+</tr>
+
+</thead>
+
+<tbody id="withdrawTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- =========================
+RETIRO CAPITAL
+========================= -->
+
+<div class="section"
+id="capitalSection">
+
+<div class="table-box">
+
+<h2>
+Solicitudes de Retiro de Capital
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Nombre</th>
+<th>Capital</th>
+<th>WhatsApp</th>
+<th>Fecha</th>
+<th>Estado</th>
+<th>Acciones</th>
+
+</tr>
+
+</thead>
+
+<tbody id="capitalTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import {
+
+getFirestore,
+collection,
+getDocs,
+doc,
+updateDoc,
+getDoc,
+query,
+where
+
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* =========================
+FIREBASE
+========================= */
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyBDSF0i002CE37zDx9oyc1tnWscLCmOdPE",
+
+authDomain: "panel-multinivel.firebaseapp.com",
+
+projectId: "panel-multinivel",
+
+storageBucket: "panel-multinivel.appspot.com",
+
+messagingSenderId: "57838273686",
+
+appId: "1:57838273686:web:a6ec68314165c0ec23aeb7"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+/* =========================
+ADMIN LOGIN
+========================= */
+
+let ADMIN_CODE =
+localStorage.getItem("nexura_admin")
+|| "280917";
+
+window.loginAdmin = function(){
+
+let code =
+document.getElementById("adminCode").value;
+
+if(code === ADMIN_CODE){
+
+document.getElementById(
+"loginScreen"
+).style.display="none";
+
+document.getElementById(
+"dashboard"
+).style.display="block";
+
+loadDashboard();
+
+}else{
+
+document.getElementById(
+"error"
+).innerText =
+"Código incorrecto";
+
+}
+
+}
+
+window.logoutAdmin = function(){
+
+document.getElementById(
+"dashboard"
+).style.display="none";
+
+document.getElementById(
+"loginScreen"
+).style.display="flex";
+
+}
+
+/* =========================
+MENU
+========================= */
+
+const menuItems =
+document.querySelectorAll(".menu-item");
+
+const sections =
+document.querySelectorAll(".section");
+
+menuItems.forEach(item=>{
+
+item.addEventListener("click",()=>{
+
+menuItems.forEach(i=>
+i.classList.remove("active")
+);
+
+item.classList.add("active");
+
+sections.forEach(sec=>
+sec.classList.remove("active")
+);
+
+document.getElementById(
+item.dataset.section
+).classList.add("active");
+
+});
+
+});
+
+/* =========================
+LOAD DASHBOARD
+========================= */
+
+async function loadDashboard(){
+
+let usersSnap =
+await getDocs(
+collection(db,"users")
+);
+
+let totalCapital = 0;
+let totalCommissions = 0;
+let totalMonthly = 0;
+let totalUsers = 0;
+
+let usersHTML = "";
+let dashboardHTML = "";
+
+usersSnap.forEach(docSnap=>{
+
+let data = docSnap.data();
+
+totalUsers++;
+
+let capital =
+Number(data.capital || 0);
+
+let commissions =
+Number(data.commissions || 0);
+
+let monthly =
+capital * 0.10;
+
+totalCapital += capital;
+totalCommissions += commissions;
+totalMonthly += monthly;
+
+/* DASHBOARD USERS */
+
+dashboardHTML += `
+
+<tr>
+
+<td>${data.name}</td>
+
+<td>
+L ${capital.toLocaleString()}
+</td>
+
+<td>
+L ${commissions.toLocaleString()}
+</td>
+
+<td>
+L ${monthly.toLocaleString()}
+</td>
+
+<td>
+
+<a href="
+https://wa.me/${data.phone}
+?text=Hola%20${encodeURIComponent(data.name)}
+%20te%20contactamos%20de%20Nexura%20Capital"
+
+target="_blank">
+
+<button class="action-btn btn-whatsapp">
+
+WhatsApp
+
+</button>
+
+</a>
+
+</td>
+
+</tr>
+
+`;
+
+/* FULL USERS */
+
+usersHTML += `
+
+<tr>
+
+<td>${data.name}</td>
+
+<td>${data.email}</td>
+
+<td>${data.phone}</td>
+
+<td>
+L ${capital.toLocaleString()}
+</td>
+
+<td>
+L ${commissions.toLocaleString()}
+</td>
+
+<td>
+L ${monthly.toLocaleString()}
+</td>
+
+<td>${data.refs || 0}</td>
+
+<td>
+
+<span class="
+${data.status === "Activo"
+? "status-approved"
+: "status-pending"}
+">
+
+${data.status || "Pendiente"}
+
+</span>
+
+</td>
+
+<td>
+
+<a href="
+https://wa.me/${data.phone}
+?text=Hola%20${encodeURIComponent(data.name)}
+%20te%20contactamos%20de%20Nexura%20Capital"
+
+target="_blank">
+
+<button class="action-btn btn-whatsapp">
+
+WhatsApp
+
+</button>
+
+</a>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+/* TOTALS */
+
+document.getElementById(
+"totalCapital"
+).innerText =
+"L " + totalCapital.toLocaleString();
+
+document.getElementById(
+"totalCommissions"
+).innerText =
+"L " + totalCommissions.toLocaleString();
+
+document.getElementById(
+"monthlyPayments"
+).innerText =
+"L " + totalMonthly.toLocaleString();
+
+document.getElementById(
+"totalUsers"
+).innerText =
+totalUsers;
+
+/* TABLES */
+
+document.getElementById(
+"lastUsers"
+).innerHTML =
+dashboardHTML;
+
+document.getElementById(
+"usersTable"
+).innerHTML =
+usersHTML;
+
+/* LOAD OTHERS */
+
+loadInvestments();
+loadWithdraws();
+loadCapitalWithdraws();
+
+}
+
+/* =========================
+INVERSIONES
+========================= */
+
+async function loadInvestments(){
+
+let html = "";
+
+const snap =
+await getDocs(
+collection(db,"investments")
+);
+
+snap.forEach(docSnap=>{
+
+let data = docSnap.data();
+
+html += `
+
+<tr>
+
+<td>${data.name}</td>
+
+<td>
+L ${Number(data.amount).toLocaleString()}
+</td>
+
+<td>${data.phone}</td>
+
+<td>
+${new Date(data.createdAt)
+.toLocaleDateString()}
+</td>
+
+<td>
+
+<span class="
+${data.status === "Aprobada"
+? "status-approved"
+: "status-pending"}
+">
+
+${data.status}
+
+</span>
+
+</td>
+
+<td>
+
+<button
+class="action-btn btn-approve"
+
+onclick="
+approveInvestment(
+'${docSnap.id}',
+'${data.uid}',
+${data.amount}
+)"
+
+>
+
+Aprobar
+
+</button>
+
+<a href="
+https://wa.me/${data.phone}
+?text=Hola%20${encodeURIComponent(data.name)}
+%20sobre%20tu%20inversión"
+
+target="_blank">
+
+<button class="action-btn btn-whatsapp">
+
+WhatsApp
+
+</button>
+
+</a>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById(
+"investmentTable"
+).innerHTML = html;
+
+}
+
+/* =========================
+RETIROS COMISIONES
+========================= */
+
+async function loadWithdraws(){
+
+let html = "";
+
+const snap =
+await getDocs(
+collection(db,"withdraws")
+);
+
+snap.forEach(docSnap=>{
+
+let data = docSnap.data();
+
+html += `
+
+<tr>
+
+<td>${data.name}</td>
+
+<td>
+L ${Number(data.amount).toLocaleString()}
+</td>
+
+<td>${data.phone}</td>
+
+<td>
+${new Date(data.createdAt)
+.toLocaleDateString()}
+</td>
+
+<td>
+
+<span class="
+${data.status === "Pagado"
+? "status-approved"
+: "status-pending"}
+">
+
+${data.status}
+
+</span>
+
+</td>
+
+<td>
+
+<button
+class="action-btn btn-approve"
+
+onclick="
+approveWithdraw(
+'${docSnap.id}',
+'${data.uid}',
+${data.amount}
+)"
+
+>
+
+Pagar
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById(
+"withdrawTable"
+).innerHTML = html;
+
+}
+
+/* =========================
+RETIRO CAPITAL
+========================= */
+
+async function loadCapitalWithdraws(){
+
+let html = "";
+
+const snap =
+await getDocs(
+collection(db,"capitalWithdraws")
+);
+
+snap.forEach(docSnap=>{
+
+let data = docSnap.data();
+
+html += `
+
+<tr>
+
+<td>${data.name}</td>
+
+<td>
+L ${Number(data.amount).toLocaleString()}
+</td>
+
+<td>${data.phone}</td>
+
+<td>
+${new Date(data.createdAt)
+.toLocaleDateString()}
+</td>
+
+<td>
+
+<span class="
+${data.status === "Pagado"
+? "status-approved"
+: "status-pending"}
+">
+
+${data.status}
+
+</span>
+
+</td>
+
+<td>
+
+<button
+class="action-btn btn-approve"
+
+onclick="
+approveCapitalWithdraw(
+'${docSnap.id}',
+'${data.uid}'
+)"
+
+>
+
+Liberar
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById(
+"capitalTable"
+).innerHTML = html;
+
+}
+
+/* =========================
+APROBAR INVERSION
+========================= */
+
+window.approveInvestment =
+async function(
+investmentId,
+uid,
+amount
+){
+
+try{
+
+const userRef =
+doc(db,"users",uid);
+
+const userSnap =
+await getDoc(userRef);
+
+const userData =
+userSnap.data();
+
+let currentCapital =
+Number(userData.capital || 0);
+
+let newCapital =
+currentCapital + Number(amount);
+
+await updateDoc(userRef,{
+
+capital:newCapital,
+status:"Activo"
+
+});
+
+/* REFERIDO */
+
+if(userData.ref){
+
+const q = query(
+collection(db,"users"),
+where("code","==",userData.ref)
+);
+
+const refSnap =
+await getDocs(q);
+
+refSnap.forEach(async(refDoc)=>{
+
+let refData =
+refDoc.data();
+
+let bonus =
+Number(amount) * 0.05;
+
+await updateDoc(
+doc(db,"users",refDoc.id),
+{
+
+commissions:
+Number(
+refData.commissions || 0
+) + bonus
+
+});
+
+});
+
+}
+
+/* UPDATE REQUEST */
+
+await updateDoc(
+doc(db,"investments",investmentId),
+{
+
+status:"Aprobada"
+
+});
+
+alert(
+"Inversión aprobada"
+);
+
+loadDashboard();
+
+}catch(error){
+
+console.log(error);
+
+alert("Error");
+
+}
+
+}
+
+/* =========================
+PAGAR COMISION
+========================= */
+
+window.approveWithdraw =
+async function(
+withdrawId,
+uid,
+amount
+){
+
+try{
+
+const userRef =
+doc(db,"users",uid);
+
+const userSnap =
+await getDoc(userRef);
+
+const userData =
+userSnap.data();
+
+let current =
+Number(
+userData.commissions || 0
+);
+
+await updateDoc(userRef,{
+
+commissions:
+Math.max(current - amount,0)
+
+});
+
+await updateDoc(
+doc(db,"withdraws",withdrawId),
+{
+
+status:"Pagado"
+
+});
+
+alert(
+"Comisión pagada"
+);
+
+loadDashboard();
+
+}catch(error){
+
+console.log(error);
+
+}
+
+}
+
+/* =========================
+LIBERAR CAPITAL
+========================= */
+
+window.approveCapitalWithdraw =
+async function(
+capitalId,
+uid
+){
+
+try{
+
+const userRef =
+doc(db,"users",uid);
+
+await updateDoc(userRef,{
+
+capital:0
+
+});
+
+await updateDoc(
+doc(db,"capitalWithdraws",capitalId),
+{
+
+status:"Pagado"
+
+});
+
+alert(
+"Capital liberado"
+);
+
+loadDashboard();
+
+}catch(error){
+
+console.log(error);
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
