@@ -23,6 +23,8 @@ body{
     overflow-x:hidden;
 }
 
+/* FONDO */
+
 .bg{
     position:fixed;
     inset:0;
@@ -95,6 +97,7 @@ body{
 .logo h1{
     color:gold;
     margin-top:15px;
+    font-size:34px;
 }
 
 .logo p{
@@ -120,6 +123,7 @@ body{
     background:#0f172a;
     color:white;
     outline:none;
+    font-size:14px;
 }
 
 .btn{
@@ -264,8 +268,13 @@ td{
     color:white;
 }
 
-.block{
-    background:red;
+.pending{
+    background:#facc15;
+    color:black;
+}
+
+.paid{
+    background:#22c55e;
     color:white;
 }
 
@@ -278,6 +287,28 @@ td{
 .success{
     background:#22c55e;
     color:white;
+}
+
+.badge{
+    padding:6px 12px;
+    border-radius:30px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.active-badge{
+    background:#22c55e22;
+    color:#22c55e;
+}
+
+.pending-badge{
+    background:#facc1522;
+    color:#facc15;
+}
+
+.blocked-badge{
+    background:#ef444422;
+    color:#ef4444;
 }
 
 </style>
@@ -371,7 +402,7 @@ td{
 
     </div>
 
-    <!-- ACTUALIZAR -->
+    <!-- ACTUALIZAR USUARIO -->
 
     <div class="section">
 
@@ -411,7 +442,67 @@ td{
 
     </div>
 
-    <!-- TABLA -->
+    <!-- PAGOS -->
+
+    <div class="section">
+
+        <h2>Pagos Mensuales</h2>
+
+        <div class="table-box">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Socio</th>
+                        <th>Capital</th>
+                        <th>Pago 10%</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="paymentsTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- REFERIDOS -->
+
+    <div class="section">
+
+        <h2>Referidos y Bonos</h2>
+
+        <div class="table-box">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Invitador UID</th>
+                        <th>Invitado</th>
+                        <th>Capital</th>
+                        <th>Bono 5%</th>
+                        <th>Estado</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="referralsTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- USUARIOS -->
 
     <div class="section">
 
@@ -469,7 +560,10 @@ import {
 getDatabase,
 ref,
 update,
-onValue
+onValue,
+get,
+push,
+set
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
@@ -501,13 +595,14 @@ const auth = getAuth(app);
 
 const db = getDatabase(app);
 
-/* TU CORREO ADMIN */
+/* ADMIN */
 
 const ADMIN_EMAIL = "admin@nexura.com";
 
 /* LOGIN */
 
-document.getElementById("loginBtn").onclick = async()=>{
+document.getElementById("loginBtn").onclick =
+async()=>{
 
 const email =
 document.getElementById("adminEmail").value;
@@ -525,7 +620,11 @@ return;
 
 try{
 
-await signInWithEmailAndPassword(auth,email,password);
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
 
 }catch(error){
 
@@ -562,135 +661,324 @@ user.email;
 
 loadUsers();
 
+loadPayments();
+
+loadReferrals();
+
+}
+
+});
+<script type="module">
+
+/* ================= FIREBASE ================= */
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getAuth,
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+getDatabase,
+ref,
+update,
+onValue,
+get,
+push,
+set
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyBDSF0i002CE37zDx9oyc1tnWscLCmOdPE",
+authDomain: "panel-multinivel.firebaseapp.com",
+databaseURL: "https://panel-multinivel-default-rtdb.firebaseio.com",
+projectId: "panel-multinivel",
+storageBucket: "panel-multinivel.firebasestorage.app",
+messagingSenderId: "57838273686",
+appId: "1:57838273686:web:a6ec68314165c0ec23aeb7",
+measurementId: "G-BS7ZT4B5VJ"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+/* ================= ADMIN EMAIL ================= */
+
+const ADMIN_EMAIL = "admin@nexura.com";
+
+/* ================= LOGIN ================= */
+
+document.getElementById("loginBtn").onclick = async()=>{
+
+const email = document.getElementById("adminEmail").value;
+const password = document.getElementById("adminPassword").value;
+
+try{
+await signInWithEmailAndPassword(auth,email,password);
+}catch(e){
+alert("Error de acceso");
+}
+
+};
+
+/* ================= VALIDACION ADMIN ================= */
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+if(user.email !== ADMIN_EMAIL){
+alert("Acceso denegado");
+signOut(auth);
+return;
+}
+
+document.getElementById("loginBox").style.display = "none";
+document.getElementById("dashboard").style.display = "block";
+
+loadUsers();
+loadPayments();
+loadReferrals();
+
 }
 
 });
 
-/* CARGAR USUARIOS */
+/* ================= USUARIOS ================= */
 
 function loadUsers(){
 
-const usersRef = ref(db,"users");
+onValue(ref(db,"users"),(snap)=>{
 
-onValue(usersRef,(snapshot)=>{
-
-const table =
-document.getElementById("usersTable");
-
+const table = document.getElementById("usersTable");
 table.innerHTML = "";
 
 let totalUsers = 0;
 let totalCapital = 0;
-let totalMonthly = 0;
 let totalBonus = 0;
 
-snapshot.forEach((child)=>{
+snap.forEach(child=>{
 
-const data = child.val();
-
+const d = child.val();
 const uid = child.key;
 
-const invested =
-Number(data.invested || 0);
-
-const bonus =
-Number(data.refBonus || 0);
+const capital = Number(d.invested || 0);
+const bonus = Number(d.refBonus || 0);
 
 totalUsers++;
-
-totalCapital += invested;
-
-totalMonthly += invested * 0.10;
-
+totalCapital += capital;
 totalBonus += bonus;
 
 table.innerHTML += `
-
 <tr>
-<td>${data.name || "-"}</td>
-<td>${data.email || "-"}</td>
+<td>${d.name}</td>
+<td>${d.email}</td>
 <td>${uid}</td>
-<td>L ${invested.toFixed(2)}</td>
-<td>L ${(invested*0.10).toFixed(2)}</td>
+<td>L ${capital.toFixed(2)}</td>
+<td>L ${(capital*0.10).toFixed(2)}</td>
 <td>L ${bonus.toFixed(2)}</td>
-<td>${data.status || "Pendiente"}</td>
-<td>${data.createdAt || "-"}</td>
+<td>${d.status || "Pendiente"}</td>
+<td>${d.createdAt || "-"}</td>
 </tr>
-
 `;
 
 });
 
-document.getElementById("totalUsers").innerHTML =
-totalUsers;
-
-document.getElementById("totalCapital").innerHTML =
-"L " + totalCapital.toFixed(2);
-
-document.getElementById("monthlyTotal").innerHTML =
-"L " + totalMonthly.toFixed(2);
-
-document.getElementById("bonusTotal").innerHTML =
-"L " + totalBonus.toFixed(2);
+document.getElementById("totalUsers").innerText = totalUsers;
+document.getElementById("totalCapital").innerText = "L " + totalCapital.toFixed(2);
+document.getElementById("bonusTotal").innerText = "L " + totalBonus.toFixed(2);
 
 });
 
 }
 
-/* ACTUALIZAR USUARIO */
+/* ================= PAGOS MENSUALES ================= */
+
+function loadPayments(){
+
+onValue(ref(db,"users"),(snap)=>{
+
+const table = document.getElementById("paymentsTable");
+table.innerHTML = "";
+
+snap.forEach(child=>{
+
+const d = child.val();
+const uid = child.key;
+
+const capital = Number(d.invested || 0);
+const pay = capital * 0.10;
+
+if(capital > 0 && d.active === true){
+
+table.innerHTML += `
+<tr>
+<td>${d.name}</td>
+<td>L ${capital.toFixed(2)}</td>
+<td>L ${pay.toFixed(2)}</td>
+<td>${d.lastPaymentStatus || "Pendiente"}</td>
+<td>
+<button class="action-btn paid"
+onclick="payUser('${uid}',${pay})">
+Pagar
+</button>
+</td>
+</tr>
+`;
+
+}
+
+});
+
+});
+
+}
+
+/* ================= PAGAR ================= */
+
+window.payUser = async(uid,amount)=>{
+
+const date = new Date().toLocaleString("es-HN");
+
+/* historial usuario */
+await push(ref(db,"movements/"+uid),{
+type:"Pago Mensual",
+amount,
+status:"Pagado",
+date
+});
+
+/* actualizar estado */
+await update(ref(db,"users/"+uid),{
+lastPaymentStatus:"Pagado"
+});
+
+alert("Pago realizado");
+
+};
+
+/* ================= REFERIDOS + BONO 5% ================= */
+
+function loadReferrals(){
+
+onValue(ref(db,"users"),(snap)=>{
+
+const table = document.getElementById("referralsTable");
+table.innerHTML = "";
+
+snap.forEach(child=>{
+
+const d = child.val();
+
+if(d.referrer){
+
+const capital = Number(d.invested || 0);
+const bonus = capital * 0.05;
+
+table.innerHTML += `
+<tr>
+<td>${d.referrer}</td>
+<td>${d.name}</td>
+<td>L ${capital.toFixed(2)}</td>
+<td>L ${bonus.toFixed(2)}</td>
+<td>${d.bonusPaid ? "Pagado" : "Pendiente"}</td>
+</tr>
+`;
+
+}
+
+});
+
+});
+
+}
+
+/* ================= ACTUALIZAR USUARIO ================= */
 
 document.getElementById("updateBtn").onclick = async()=>{
 
-const uid =
-document.getElementById("uid").value;
+const uid = document.getElementById("uid").value;
+const amount = Number(document.getElementById("amount").value);
+const bonus = Number(document.getElementById("bonus").value);
+const status = document.getElementById("status").value;
 
-const amount =
-Number(document.getElementById("amount").value);
+if(!uid) return alert("UID requerido");
 
-const bonus =
-Number(document.getElementById("bonus").value);
+const snap = await get(ref(db,"users/"+uid));
 
-const status =
-document.getElementById("status").value;
+if(!snap.exists()) return alert("Usuario no existe");
 
-if(!uid){
+const user = snap.val();
 
-alert("Ingresa UID");
-
-return;
-
-}
-
-try{
-
-await update(ref(db,"users/" + uid),{
-
+/* actualizar usuario */
+await update(ref(db,"users/"+uid),{
 invested:amount,
 refBonus:bonus,
-status:status,
-active:status === "Activo"
-
+status,
+active:status==="Activo"
 });
 
-alert("Cuenta actualizada");
+/* BONO 5% AUTOMATICO */
+if(user.referrer && status==="Activo" && !user.bonusPaid){
 
-}catch(error){
+const bonus5 = amount * 0.05;
 
-alert(error.message);
+/* sumar al invitador */
+const inviterRef = ref(db,"users/"+user.referrer);
+const inviterSnap = await get(inviterRef);
+
+if(inviterSnap.exists()){
+
+const inv = inviterSnap.val();
+
+await update(inviterRef,{
+refBonus: Number(inv.refBonus||0) + bonus5
+});
+
+/* historial */
+await push(ref(db,"movements/"+user.referrer),{
+type:"Bono Referido 5%",
+amount:bonus5,
+status:"Pagado",
+date:new Date().toLocaleString("es-HN")
+});
 
 }
 
-}
-
-/* LOGOUT */
-
-document.getElementById("logoutBtn").onclick = async()=>{
-
-await signOut(auth);
-
-window.location.reload();
+/* marcar pagado */
+await update(ref(db,"users/"+uid),{
+bonusPaid:true
+});
 
 }
+
+/* movimiento activación */
+await push(ref(db,"movements/"+uid),{
+type:"Activación",
+amount,
+status:"Activo",
+date:new Date().toLocaleString("es-HN")
+});
+
+alert("Usuario actualizado");
+
+};
+
+/* ================= LOGOUT ================= */
+
+document.getElementById("logoutBtn").onclick = ()=>{
+
+signOut(auth);
+location.reload();
+
+};
 
 </script>
 
