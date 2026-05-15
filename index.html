@@ -23,8 +23,6 @@ body{
     overflow-x:hidden;
 }
 
-/* FONDO */
-
 .bg{
     position:fixed;
     inset:0;
@@ -225,13 +223,19 @@ header{
     margin-bottom:20px;
 }
 
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
 .table-box{
     overflow-x:auto;
 }
 
 table{
     width:100%;
-    min-width:900px;
+    min-width:1000px;
     border-collapse:collapse;
 }
 
@@ -247,10 +251,22 @@ td{
     border-bottom:1px solid rgba(255,255,255,.05);
 }
 
-.form-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
+.action-btn{
+    padding:8px 14px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.activate{
+    background:#22c55e;
+    color:white;
+}
+
+.block{
+    background:red;
+    color:white;
 }
 
 .logout{
@@ -282,12 +298,17 @@ td{
         <div class="logo">
             <img src="img/Nexura_Capital_logo.png">
             <h1>PANEL ADMIN</h1>
-            <p>Acceso Seguro Nexura Capital</p>
+            <p>Nexura Capital</p>
         </div>
 
         <div class="input-group">
-            <label>Código Administrativo</label>
-            <input type="password" id="adminCode" placeholder="Ingrese código">
+            <label>Correo Administrador</label>
+            <input type="email" id="adminEmail">
+        </div>
+
+        <div class="input-group">
+            <label>Contraseña</label>
+            <input type="password" id="adminPassword">
         </div>
 
         <button class="btn" id="loginBtn">
@@ -317,7 +338,7 @@ td{
 
     <div>
         <small>Administrador</small>
-        <h3>Oficina Central</h3>
+        <h3 id="adminName">Admin</h3>
     </div>
 
 </header>
@@ -339,18 +360,18 @@ td{
         </div>
 
         <div class="card">
-            <h4>Ganancia Mensual</h4>
+            <h4>Ganancias 10%</h4>
             <h1 id="monthlyTotal">L 0</h1>
         </div>
 
         <div class="card">
-            <h4>Comisiones Totales</h4>
+            <h4>Bonos Referidos</h4>
             <h1 id="bonusTotal">L 0</h1>
         </div>
 
     </div>
 
-    <!-- ACTUALIZAR USUARIO -->
+    <!-- ACTUALIZAR -->
 
     <div class="section">
 
@@ -364,12 +385,12 @@ td{
             </div>
 
             <div class="input-group">
-                <label>Capital en Lempiras</label>
+                <label>Capital (Lempiras)</label>
                 <input type="number" id="amount">
             </div>
 
             <div class="input-group">
-                <label>Bono Referido</label>
+                <label>Bono Referidos</label>
                 <input type="number" id="bonus">
             </div>
 
@@ -378,6 +399,7 @@ td{
                 <select id="status">
                     <option value="Activo">Activo</option>
                     <option value="Pendiente">Pendiente</option>
+                    <option value="Bloqueado">Bloqueado</option>
                 </select>
             </div>
 
@@ -389,28 +411,7 @@ td{
 
     </div>
 
-    <!-- CAMBIAR PIN -->
-
-    <div class="section">
-
-        <h2>Cambiar Código Admin</h2>
-
-        <div class="form-grid">
-
-            <div class="input-group">
-                <label>Nuevo Código</label>
-                <input type="password" id="newAdminCode">
-            </div>
-
-        </div>
-
-        <button class="btn success" id="changeCodeBtn">
-            Guardar Nuevo Código
-        </button>
-
-    </div>
-
-    <!-- TABLA USUARIOS -->
+    <!-- TABLA -->
 
     <div class="section">
 
@@ -421,14 +422,18 @@ td{
             <table>
 
                 <thead>
+
                     <tr>
                         <th>Nombre</th>
                         <th>Correo</th>
+                        <th>UID</th>
                         <th>Capital</th>
                         <th>10%</th>
                         <th>Bono</th>
                         <th>Estado</th>
+                        <th>Fecha</th>
                     </tr>
+
                 </thead>
 
                 <tbody id="usersTable"></tbody>
@@ -449,72 +454,102 @@ td{
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getAuth,
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
 getDatabase,
 ref,
-get,
-set,
 update,
 onValue
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 /* FIREBASE */
 
 const firebaseConfig = {
 
-apiKey: "TU_API_KEY",
-authDomain: "TU_AUTH_DOMAIN",
-databaseURL: "TU_DATABASE_URL",
-projectId: "TU_PROJECT_ID",
-storageBucket: "TU_BUCKET",
-messagingSenderId: "TU_SENDER_ID",
-appId: "TU_APP_ID"
+apiKey: "AIzaSyBDSF0i002CE37zDx9oyc1tnWscLCmOdPE",
+
+authDomain: "panel-multinivel.firebaseapp.com",
+
+databaseURL: "https://panel-multinivel-default-rtdb.firebaseio.com",
+
+projectId: "panel-multinivel",
+
+storageBucket: "panel-multinivel.firebasestorage.app",
+
+messagingSenderId: "57838273686",
+
+appId: "1:57838273686:web:a6ec68314165c0ec23aeb7",
+
+measurementId: "G-BS7ZT4B5VJ"
 
 };
 
 const app = initializeApp(firebaseConfig);
 
+const auth = getAuth(app);
+
 const db = getDatabase(app);
 
-/* CODIGO ADMIN */
+/* TU CORREO ADMIN */
 
-const DEFAULT_ADMIN_CODE = "280917";
-
-/* OBTENER CODIGO */
-
-async function getAdminCode(){
-
-const snapshot = await get(ref(db,"admin/code"));
-
-if(snapshot.exists()){
-
-return snapshot.val();
-
-}else{
-
-await set(ref(db,"admin/code"),DEFAULT_ADMIN_CODE);
-
-return DEFAULT_ADMIN_CODE;
-
-}
-
-}
+const ADMIN_EMAIL = "admin@nexura.com";
 
 /* LOGIN */
 
 document.getElementById("loginBtn").onclick = async()=>{
 
-const inputCode =
-document.getElementById("adminCode").value;
+const email =
+document.getElementById("adminEmail").value;
 
-const realCode =
-await getAdminCode();
+const password =
+document.getElementById("adminPassword").value;
 
-if(inputCode === realCode){
+if(!email || !password){
 
-localStorage.setItem("adminLogged","true");
+alert("Completa los campos");
+
+return;
+
+}
+
+try{
+
+await signInWithEmailAndPassword(auth,email,password);
+
+}catch(error){
+
+alert("Correo o contraseña incorrecta");
+
+}
+
+}
+
+/* VALIDAR ADMIN */
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+if(user.email !== ADMIN_EMAIL){
+
+alert("Acceso denegado");
+
+signOut(auth);
+
+return;
+
+}
 
 document.getElementById("loginBox").style.display =
 "none";
@@ -522,30 +557,8 @@ document.getElementById("loginBox").style.display =
 document.getElementById("dashboard").style.display =
 "block";
 
-loadUsers();
-
-}else{
-
-alert("Código incorrecto");
-
-}
-
-}
-
-/* SESION */
-
-window.addEventListener("load",()=>{
-
-const logged =
-localStorage.getItem("adminLogged");
-
-if(logged === "true"){
-
-document.getElementById("loginBox").style.display =
-"none";
-
-document.getElementById("dashboard").style.display =
-"block";
+document.getElementById("adminName").innerHTML =
+user.email;
 
 loadUsers();
 
@@ -575,6 +588,8 @@ snapshot.forEach((child)=>{
 
 const data = child.val();
 
+const uid = child.key;
+
 const invested =
 Number(data.invested || 0);
 
@@ -582,8 +597,11 @@ const bonus =
 Number(data.refBonus || 0);
 
 totalUsers++;
+
 totalCapital += invested;
+
 totalMonthly += invested * 0.10;
+
 totalBonus += bonus;
 
 table.innerHTML += `
@@ -591,10 +609,12 @@ table.innerHTML += `
 <tr>
 <td>${data.name || "-"}</td>
 <td>${data.email || "-"}</td>
+<td>${uid}</td>
 <td>L ${invested.toFixed(2)}</td>
 <td>L ${(invested*0.10).toFixed(2)}</td>
 <td>L ${bonus.toFixed(2)}</td>
 <td>${data.status || "Pendiente"}</td>
+<td>${data.createdAt || "-"}</td>
 </tr>
 
 `;
@@ -662,34 +682,11 @@ alert(error.message);
 
 }
 
-/* CAMBIAR CODIGO */
-
-document.getElementById("changeCodeBtn").onclick = async()=>{
-
-const newCode =
-document.getElementById("newAdminCode").value;
-
-if(newCode.length < 4){
-
-alert("Código muy corto");
-
-return;
-
-}
-
-await set(ref(db,"admin/code"),newCode);
-
-alert("Código actualizado");
-
-document.getElementById("newAdminCode").value = "";
-
-}
-
 /* LOGOUT */
 
-document.getElementById("logoutBtn").onclick = ()=>{
+document.getElementById("logoutBtn").onclick = async()=>{
 
-localStorage.removeItem("adminLogged");
+await signOut(auth);
 
 window.location.reload();
 
